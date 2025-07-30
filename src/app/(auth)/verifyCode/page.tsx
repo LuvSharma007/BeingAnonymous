@@ -3,7 +3,9 @@ import React from 'react'
 const page = () => {
   return (
     <div>
-      <h1>Sign in</h1>
+    <h1>
+      Verify code
+    </h1>
     </div>
   )
 }
