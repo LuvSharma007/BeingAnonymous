@@ -4,16 +4,17 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 import Link from "next/link"
 import axios, { AxiosError } from 'axios'
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useDebounceCallback } from 'usehooks-ts'
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { signupSchema } from "@/schemas/signupSchema"
 import { ApiResponse } from "@/types/ApiResponse"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Button } from "@/components/ui/button"
 import { Loader2 } from "lucide-react";
-import { text } from "stream/consumers"
+import { Input } from "@/components/ui/input"
+
 
 
 const page = () => {
@@ -60,19 +61,21 @@ const debouncedCheckUsername = useDebounceCallback(checkUsernameIsUnique, 500);
     try {
       const res = await axios.post<ApiResponse>('/api/signup', data)
       console.log(data);
-      if (res.status === 200) {
-        toast('Success', {
-          description: res.data.message,
-        })
-      }
+      toast.success('Success', {
+          description: "Signup Successful",
+          className:"bg-green-700 text-white text-sm",
+          duration:3000,
+      })
       router.replace(`/verify/${data.username}`);
 
     } catch (error) {
       console.log("Error during signup", error);
       const axiosError = error as AxiosError<ApiResponse>;
       let errorMessage = axiosError.response?.data.message
-      toast('Signup failed', {
-        description: errorMessage
+      toast.error('Signup failed', {
+        description: errorMessage,
+        className:'bg-red-700 text-white text-sm',
+        duration:5000,
       })
     } finally {
       setIsSubmitting(false);
@@ -84,7 +87,7 @@ const debouncedCheckUsername = useDebounceCallback(checkUsernameIsUnique, 500);
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Join True Feedback
+            Being Anonymous 
           </h1>
           <p className="mb-4">Sign up to start your anonymous adventure</p>
         </div>
@@ -96,7 +99,7 @@ const debouncedCheckUsername = useDebounceCallback(checkUsernameIsUnique, 500);
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Username</FormLabel>
-                    <input placeholder="username" {...field}
+                    <Input placeholder="username" {...field}
                     onChange={(e)=>{
                       field.onChange(e)
                       debouncedCheckUsername(e.target.value)
@@ -115,7 +118,7 @@ const debouncedCheckUsername = useDebounceCallback(checkUsernameIsUnique, 500);
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   
-                    <input placeholder="email" {...field}/>
+                    <Input placeholder="email" {...field}/>
                     <p className='text-gray-400 text-sm'>We will send you a verification code</p>
                     <FormMessage/>
                   <FormControl/>
@@ -123,13 +126,13 @@ const debouncedCheckUsername = useDebounceCallback(checkUsernameIsUnique, 500);
               )}
             />
             <FormField
-              name="password"
+              name="password"             
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   
-                    <input placeholder="password" {...field}
+                    <Input placeholder="password" {...field}
                     />
                   
                   <FormMessage />
@@ -150,7 +153,7 @@ const debouncedCheckUsername = useDebounceCallback(checkUsernameIsUnique, 500);
           <div className="text-center mt-4">
           <p>
             Already a member?{' '}
-            <Link href="/sign-in" className="text-blue-600 hover:text-blue-800">
+            <Link href="/signin" className="text-blue-600 hover:text-blue-800">
               Sign in
             </Link>
           </p>
